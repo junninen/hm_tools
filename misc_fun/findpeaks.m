@@ -10,10 +10,12 @@ function [P,d]=findpeaks(x,y,SlopeThreshold,AmpThreshold,smoothwidth,peakgroup)
 % T. C. O'Haver, 1995.  Version 2  Last revised Oct 27, 2006
 smoothwidth=round(smoothwidth);
 peakgroup=round(peakgroup);
-% d=fastsmooth(deriv(y),smoothwidth);
 % d=H_rm_spikes(deriv(y));
-d=fastsmooth(deriv(H_rm_spikes(y)),smoothwidth);
-
+try
+    d=fastsmooth(deriv(H_rm_spikes(y)),smoothwidth);
+catch
+     d=fastsmooth(deriv(y),smoothwidth);
+end
 %d=-fastsmooth(deriv(d1),smoothwidth);
 %d=fastsmooth(deriv(d2),smoothwidth);
 n=round(peakgroup/2+1);
@@ -32,7 +34,7 @@ for j=smoothwidth:length(y)-smoothwidth,
               if groupindex>vectorlength, groupindex=vectorlength;end
             xx(k)=x(groupindex);yy(k)=y(groupindex);
           end
-          [coef,S,MU]=polyfit(xx,log(abs(yy)),2);  % Fit parabola to log10 of sub-group with centering and scaling
+          [coef,S,MU]=polyfitL(xx,log(abs(yy)),2);  % Fit parabola to log10 of sub-group with centering and scaling
           c1=coef(3);c2=coef(2);c3=coef(1);
           PeakX=-((MU(2).*c2/(2*c3))-MU(1));   % Compute peak position and height of fitted parabola
           PeakY=exp(c1-c3*(c2/(2*c3))^2);
