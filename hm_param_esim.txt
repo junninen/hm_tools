@@ -1,0 +1,67 @@
+%parameter file for HMTools hm_load -function
+%file contains paths for all instruments and file-name-models (fnm).
+%file-name-model is a description how files are named and how file names
+%can be constructed using a date values
+%
+%this file follows matlab convention for commenting. 
+%row starting with '%' will be ignored
+%additionally tags (with closing tags) are used:
+%<instrument>,<name>,<path>,<fnm>
+%
+%example:
+%<instrument>
+%  <name>SomeName</name>
+%  <path>SomePath</path>
+%  <fnm>sprintf(SomeModel)</fnm>
+%</instrument>
+%<instrument>
+%  <name>
+%    SomeOtherName
+%  </name>
+%  <path>
+%    SomeOtherPath
+%  </path>
+%  <fnm>sprintf(SomeOtherModel)</fnm>
+%</instrument>
+%
+%Instrument names can be:
+%    dmps
+%    aisn
+%    aisp
+%    cpc
+%    naisn
+%    naisp
+%    bsman
+%    bsmap
+%    volh
+%    volc
+%
+%file-name-models can use variable names 
+%yyyy, yy for year, (e.g. 2005, 05)
+%mm   for month (e.g. 04)    
+%dd       for day (e.g. 01)
+%
+%file-name-model can include also part of the path
+%e.g. if you have under instrument folder different years in 
+%separeted folder the FNM would be:
+%
+%  <path>H:\dat\hyytiala\dmps\</path>
+%  <fnm>sprintf('\\sum\\%4d\\dm%02d%02d%02d.sum',yyyy,yy,mm,dd)</fnm>
+%
+%and outcome for 2003-04-12 is 
+%H:\dat\hyytiala\dmps\sum\2003\dm030412.sum
+
+%edited
+
+<instrument>
+  <name>dmps</name>
+  <path>H:\dat\hyytiala\dmps\sum</path>
+  <fnm>sprintf('dm%02d%02d%02d.sum',yy,mm,dd)</fnm>
+</instrument>
+<instrument>
+  <name>
+   aisn
+</name>
+  <path>H:\dat\hyytiala\ais\sum</path>
+  <fnm>sprintf('dm%4d%02d%02dn.sum',yyyy,mm,dd)</fnm>
+</instrument>

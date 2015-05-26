@@ -1,0 +1,33 @@
+%todo list for HMTools
+
+saving structures - DONE 4.6.07  HJ
+load previous work - DONE 4.6.07 HJ
+extracting and saving event classification 
+extracting and saving growth rate information
+Add mobility axies to AIS, BSMA, NAIS plots
+Load BSMA files also from 2E-format
+BSMA plotting for many days
+code prctile, not to use statistics toolbox - DONE 4.6.07 copied form stat_toolbox
+AIS classifications - DONE 4.6.07 HJ
+Event start(time,size)-end(time,size)
+
+partly bad swithes off when classification is not made
+(eventClass field is not created if only partlybad is selected) - DONE 4.6.07 HJ
+
+AIS data shifted by 2hours??? Ask Marko if UTC correction changed
+
+hm_plot: check if all days are present, and if not ignore it,  but still plot whats there DONE 5.6.07 HJ
+hm_smoothing: loop it through many days if needed DONE 20.Nov.2007 HJ
+
+hm_mf: write fitting parameters and algorithm to fits field
+
+make history function, save each command that modifies the structure DONE 20.Nov.2007 HJ
+make undo function hm_reset
+make test data, and commmand set to easy bug -finding
+put inside hm_load function diameter conversion, actually but separate field for different mobilites!
+
+define raw data and anaysed data path
+add switch to hm_load to load raw or analysed data
+add raw/analysed path to parameter file
+
+check classification in eventClassifier

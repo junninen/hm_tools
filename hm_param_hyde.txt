@@ -1,0 +1,69 @@
+%parameter file for HMTools hm_load -function
+%file contains paths for all instruments and file-name-models (fnm).
+%file-name-model is a description how files are named and how file names
+%can be constructed using a date values
+%
+%this file follows matlab convention for commenting. 
+%row starting with '%' will be ignored
+%additionally tags (with closing tags) are used:
+%<instrument>,<name>,<path>,<fnm>
+%
+%example:
+%<instrument>
+%  <name>SomeName</name>
+%  <path>SomePath</path>
+%  <fnm>sprintf(SomeModel)</fnm>
+%</instrument>
+%<instrument>
+%  <name>
+%    SomeOtherName
+%  </name>
+%  <path>
+%    SomeOtherPath
+%  </path>
+%  <fnm>sprintf(SomeOtherModel)</fnm>
+%</instrument>
+%
+%Instrument names can be:
+%    dmps
+%    aisn
+%    aisp
+%    cpc
+%    naisn
+%    naisp
+%    bsman
+%    bsmap
+%    volh
+%    volc
+%
+%file-name-models can use variable names 
+%yyyy, yy for year, (e.g. 2005, 05)
+%mm   for month (e.g. 04)    
+%dd       for day (e.g. 01)
+%
+
+<instrument>
+  <name>dmps</name>
+  <path>C:\dat\hyytiala\dmps\</path>
+  <fnm>sprintf('%4d\\sum\\dm%02d%02d%02d.sum',yyyy,yy,mm,dd)</fnm>
+</instrument>
+<instrument>
+  <name>aisn</name>
+  <path>C:\dat\hyytiala\ais\</path>
+  <fnm>sprintf('%4d\\sum\\AIS1n%4d%02d%02dReInverted.sum',yyyy,yyyy,mm,dd)</fnm>
+</instrument>
+<instrument>
+  <name>aisp</name>
+  <path>C:\dat\hyytiala\ais\</path>
+  <fnm>sprintf('%4d\\sum\\AIS1p%4d%02d%02dReInverted.sum',yyyy,yyyy,mm,dd)</fnm>
+</instrument>
+<instrument>
+  <name>naisn</name>
+  <path>C:\dat\hyytiala\nais\</path>
+  <fnm>sprintf('%4d\\sum\\aisn%4d%02d%02dA.sum',yyyy,yyyy,mm,dd)</fnm>
+</instrument>
+<instrument>
+  <name>naisp</name>
+  <path>C:\dat\hyytiala\nais\</path>
+  <fnm>sprintf('%4d\\sum\\aisp%4d%02d%02dA.sum',yyyy,yyyy,mm,dd)</fnm>
+</instrument>

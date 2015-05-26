@@ -1,0 +1,22 @@
+%log-book
+
+01.06.2007
+hm_load:
+extract time vector for all instruments and save it to meta-structure
+
+hm_plot:
+AIS plotting for many days
+
+eventClassifier:
+Save work to speciefied folder
+Load work from specified folder by defining parFile
+delete fitting corrected 
+Added new classes for events
+Changed eventTable from structure
+	now 13 columns:
+		cols={'date',...
+                'ev1a','ev1b','ev2','evApple','evBump','evRain','evFeatureless',...
+                'nonEv','undef','badData','partlyBad','checkSum'};
+	Column names are also saved to hmD-structure as evTabHdr
+Tuomo
+

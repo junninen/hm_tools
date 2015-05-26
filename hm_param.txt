@@ -1,0 +1,5 @@
+<instrument>
+  <name>dmps</name>
+  <path>//Volumes//HD-PCTU3//dat//hyytiala//DMPS//</path>
+  <fnm>sprintf('%4d////sum////dm%02d%02d%02d.sum',yyyy,yy,mm,dd)</fnm>
+</instrument>
