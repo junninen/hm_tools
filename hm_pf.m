@@ -85,7 +85,7 @@ for d=1:nrDays
             dati=dat(:,t);
             
             SlopeThreshold=.01;
-            AmpThreshold=50;
+            AmpThreshold=10;
             smoothwidth=3;
             peakgroup=5;
             

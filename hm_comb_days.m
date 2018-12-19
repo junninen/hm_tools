@@ -87,12 +87,13 @@ for i=1:nrInstr
             return
         end
         sumf=cell(nrDays,1);
-        dp=sumf;
+        dp=sumf;        
         temp=sumf;
         for id=1:nrDays
             sumf{id}=eval([datStr,'{',num2str(id),'}']);
             %             [n,m]=size(sumf{id});
-            dp{id}=sumf{id}(1,3:end);
+%             dp{id}=sumf{id}(1,3:end);
+            dp{id}=eval([timStr,'.dp','{',num2str(id),'}']);
             %             nrBins(id)=length(dp{id});
             %             ti{id}=sumf{id}(2:n,1); %julian date
             %             tim{id}=timeVector(id)+(ti{id}-floor(ti{id})); %matlab date

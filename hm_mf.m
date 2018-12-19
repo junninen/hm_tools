@@ -119,6 +119,7 @@ for d=1:nrDays
     eval(['hmD.fit.',srs,'.ws{d}=ws;']);
     eval(['hmD.fit.',srs,'.Hs{d}=Hs;']);
     eval(['hmD.fit.',srs,'.Ns{d}=Ns;']);
+    eval(['hmD.fit.',srs,'.Algorithm=''',meth,''';']);
 end %days
 
 %% sortModes

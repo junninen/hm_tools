@@ -23,11 +23,16 @@ nrDays=eval(['length(hmD.',srs,')']);
 for d=1:nrDays
     %make plot, one day at the time
     if nargin==2
-    a=ginput(2);
+        a=ginput(2);
     end
-
-%     tmBig=eval(['hmD.fit.',srs,'.tm']);
-    tmBig=eval(['hmD.meta.',srs,'.tim{d}']);
+    eval(['meth=hmD.fit.',srs,'.Algorithm']);
+    switch meth
+        case 'peaks'
+            tmBig=eval(['hmD.fit.',srs,'.tm{d}']);
+        case 'lognorm'
+            tmBig=eval(['hmD.meta.',srs,'.tim{d}']);
+    end
+    
     %convert time to hours starting
     mnH=min(floor(tmBig*24));
     tmBig=(tmBig*24)-mnH;
@@ -36,9 +41,9 @@ for d=1:nrDays
     wBig=eval(['hmD.fit.',srs,'.ws{d}']);
     nBig=eval(['hmD.fit.',srs,'.Ns{d}']);
     % dis=eval(['hmD.fit.',srs,'.yhat']);
-
+    
     nrM=size(zBig,2);
-
+    
     [p,s]=polyfit(a(:,1),a(:,2),1);
     ItmWin=tmBig>=a(1,1)&tmBig<=a(2,1);
     tm=tmBig(ItmWin);
@@ -46,47 +51,61 @@ for d=1:nrDays
     w=wBig(ItmWin,:);
     n=nBig(ItmWin,:);
     % dists=dis(ItmWin)';
+    
+    IdpWin=z>=a(1,2)&z<=a(2,2);
+        tm=tm(IdpWin);
+    z=z(IdpWin,:);
+    w=w(IdpWin,:);
+    n=n(IdpWin,:);
+    
     tmHuge=repmat(tm,1,nrM);
-
-
+    
+    
     nrTm=length(tm); %how many time points used for calc
     zhat=p(1).*tm+p(2);
-
+    
     % hold on
     % plot(tm,zhat,'w')
     % hold off
-
+    
     er=abs(log10(repmat(zhat,1,nrM))-log10(z));
-
+    
     %select smallest by min-fun indexes
-
-    [mn,Imn]=min(er');
-    Itm=[1:nrTm]';
-    Iok=mn<0.2;
-    Itm=Itm(Iok);
-    Imn=Imn(Iok);
-    Isel=size(tm,1)*(Imn-1)+Itm';
-
-    tmSel=tm(Iok);
-
-    %growth rate
-    zSel=z(Isel);
-
-    %formation rate
-    nSel=n(Isel);
-
-
+    if 1
+        [mn,Imn]=min(er');
+        Itm=[1:nrTm]';
+        Iok=mn<0.2;
+        Itm=Itm(Iok);
+        Imn=Imn(Iok);
+        Isel=size(tm,1)*(Imn-1)+Itm';
+        
+        tmSel=tm(Iok);
+        
+        %growth rate
+        zSel=z(Isel);
+        
+        %formation rate
+        nSel=n(Isel);
+    else
+        tmSel=tm;
+        zSel=z;
+        nSel=n;
+    end
+    
+    
     % hold on
     % plot(tmSel,zSel,'w*')
     % hold off
-
+    
     %final fit gr
     % x=tmSel*24;
     x=tmSel; %conversion to hours made already
     y=zSel;
     x=x(:);
     y=y(:);
-
+    
+    
+    
     %bootstrap
     lx=length(x);
     indx=1:lx;
@@ -99,31 +118,31 @@ for d=1:nrDays
     gr_prc25=prctile(p_bs(:,1),25);
     gr_prc50=prctile(p_bs(:,1),50);
     gr_prc75=prctile(p_bs(:,1),75);
-
+    
     gr_avr=mean(p_bs(:,1));
     gr_std=std(p_bs(:,1));
-
+    
     int_prc25=prctile(p_bs(:,2),25);
     int_prc50=prctile(p_bs(:,2),50);
     int_prc75=prctile(p_bs(:,2),75);
-
+    
     int_avr=mean(p_bs(:,2));
     int_std=std(p_bs(:,2));
-
-
+    
+    
     yhat=x.*mean(p_bs(:,1))+mean(p_bs(:,2));
     % hold on
     % plot(tmSel,yhat,'b','linewidth',2)
     % hold off
     % title([srs,' ',hmD.FNam,' gr\_avr=',num2str(round(gr_avr*1e9*100)/100),' [nm/h]'])
-
+    
     % %bootstrap formation rate
     % x=tmSel*24;
     x=tmSel;
     y=nSel;
     x=x(:);
     y=y(:);
-
+    
     for i=1:100
         randIndx=randperm(lx);
         Ibs=randIndx(1:nrbs);
@@ -132,10 +151,10 @@ for d=1:nrDays
     fr_prc25=prctile(p_bs(:,1),25);
     fr_prc50=prctile(p_bs(:,1),50);
     fr_prc75=prctile(p_bs(:,1),75);
-
+    
     fr_avr=mean(p_bs(:,1));
     fr_std=std(p_bs(:,1));
-
+    
     %save results
     gr_str(d).dp_range=[min(zSel),max(zSel)];
     gr_str(d).tm_range=[(x(1)+mnH)/24, (x(end)+mnH)/24];

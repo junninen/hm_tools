@@ -300,7 +300,7 @@ switch plotType
         plot_aisn_block(AEstr,caxisMax,lowDP,hghDP)
         subplot(2,1,2)
         plot_aisp_block(AEstr,caxisMax,lowDP,hghDP)
-     case 'naisn_block'
+    case 'naisn_block'
         lowDP=1.3e-9;
         hghDP=50e-9;
         plot_naisn_block(AEstr,caxisMax,lowDP,hghDP)
@@ -314,7 +314,7 @@ switch plotType
         subplot(2,1,1)
         plot_naisn_block(AEstr,caxisMax,lowDP,hghDP)
         subplot(2,1,2)
-        plot_naisp_block(AEstr,caxisMax,lowDP,hghDP)       
+        plot_naisp_block(AEstr,caxisMax,lowDP,hghDP)
         
     otherwise
         disp('AE_plot: unknown plotType')
@@ -355,6 +355,7 @@ if iscell(AEstr.dmps)
                     %                 caxisMax=10*1e-18
                 end
                 pcolor(timd,dPd,plotD),shading flat
+                colormap('jet')
                 hold on
                 if plotFits
                     try
@@ -390,6 +391,8 @@ if iscell(AEstr.dmps)
                 %                 caxisMax=10*1e-18
             end
             pcolor(timd,dPd,plotD),shading flat
+            colormap('jet')
+            
             hold on
             if plotFits
                 try
@@ -422,6 +425,8 @@ else
     
     plotD=log10(max(AEstr.dmps(2:end,3:end)',1e-10));
     pcolor(timd,dPd,plotD),shading flat
+    colormap('jet')
+    
     if ~isempty(AEstr.startTime)
         title(['DMPS: ',AEstr.startTime])
     else
@@ -482,6 +487,8 @@ for i=1:length(AEstr.aisp)
         plotD=log10(max(AEstr.aisp{i}(2:end,3:end)',1e-10));
         %             plotD=log10(AEstr.aisp{i}(2:end,3:end)');
         pcolor(tima,dPa,plotD)
+        colormap('jet')
+        
         hold on
     end
 end
@@ -537,6 +544,8 @@ for i=1:length(AEstr.aisn)
         dPa=AEstr.meta.aisn.dp{i}(1,:);
         plotD=log10(max(AEstr.aisn{i}(2:end,3:end)',1e-10));
         pcolor(tima,dPa,plotD)
+        colormap('jet')
+        
         hold on
     end
 end
@@ -573,6 +582,8 @@ dPa=AEstr.ais(1,3:end);
 
 plotD=log10(max(AEstr.ais(2:end,3:end)',1e-10));
 pcolor(tima,dPa,plotD),shading flat
+colormap('jet')
+
 title(['AIS total: ',AEstr.startTime])
 shading flat; grid on
 set(gca,'YScale','log')
@@ -589,6 +600,8 @@ dPa=AEstr.aisn(1,3:end);
 % 	plotD=log10(max(AEstr.aisn(2:end,3:end)',1e-10))-log10(max(AEstr.aisp(2:end,3:end)',1e-10));
 plotD=max(AEstr.aisn(2:end,3:end)',1e-10)-max(AEstr.aisp(2:end,3:end)',1e-10);
 pcolor(tima,dPa,plotD),shading flat
+colormap('jet')
+
 title('AIS difference; neg-pos')
 shading flat; grid on
 set(gca,'YScale','log')
@@ -621,6 +634,8 @@ for i=1:length(AEstr.naisp)
         
         plotD=log10(max(dat',1e-10));
         pcolor(tima,dPa,plotD),shading flat
+        colormap('jet')
+        
         hold on
     end
 end
@@ -681,6 +696,8 @@ for i=1:length(AEstr.naisn)
         plotD=log10(max(dat',1e-10));
         % plotD=(max(AEstr.naisn(2:end,3:end)',1e-10));
         pcolor(tima,dPa,plotD),shading flat
+        colormap('jet')
+        
         hold on
     end
 end
@@ -724,6 +741,8 @@ dPa=AEstr.nais4p(1,3:end);
 
 plotD=log10(max(AEstr.nais4p(2:end,3:end)',1e-10));
 pcolor(tima,dPa,plotD),shading flat
+colormap('jet')
+
 title(['NAIS ion: (+) ',AEstr.startTime])
 shading flat; grid on
 set(gca,'YScale','log')
@@ -743,6 +762,8 @@ dPa=AEstr.nais4n(1,3:end);
 
 plotD=log10(max(AEstr.nais4n(2:end,3:end)',1e-10));
 pcolor(tima,dPa,plotD),shading flat
+colormap('jet')
+
 title(['NAIS ion: (-) ',AEstr.startTime])
 shading flat; grid on
 set(gca,'YScale','log')
@@ -762,6 +783,8 @@ dPa=AEstr.nais4pA(1,3:end);
 
 plotD=log10(max(AEstr.nais4pA(2:end,3:end)',1e-10));
 pcolor(tima,dPa,plotD),shading flat
+colormap('jet')
+
 title(['NAIS particles: (+) ',AEstr.startTime])
 shading flat; grid on
 set(gca,'YScale','log')
@@ -781,6 +804,8 @@ dPa=AEstr.nais4nA(1,3:end);
 
 plotD=log10(max(AEstr.nais4nA(2:end,3:end)',1e-10));
 pcolor(tima,dPa,plotD),shading flat
+colormap('jet')
+
 title(['NAIS particles: (-) ',AEstr.startTime])
 shading flat; grid on
 set(gca,'YScale','log')
@@ -801,6 +826,8 @@ caxisMax,lowDP,hghDP=4;
 
 plotD=log10(max(AEstr.volC(2:end,3:end)',1e-10));
 pcolor(timd,dPd,plotD),shading flat
+colormap('jet')
+
 title(['Volatility, cold: ',AEstr.startTime])
 shading flat; grid on
 set(gca,'YScale','log')
@@ -821,6 +848,8 @@ dPd=AEstr.volH(1,3:end)-0.6e-9;
 
 plotD=log10(max(AEstr.volH(2:end,3:end)',1e-10));
 pcolor(timd,dPd,plotD),shading flat
+colormap('jet')
+
 title(['Volatility, hot: ',AEstr.startTime])
 shading flat; grid on
 set(gca,'YScale','log')
@@ -839,6 +868,8 @@ plotDc=log10(max(AEstr.comb(2:end,3:end),1));
 timc=repmat(AEstr.comb(2:end,1),1,length(AEstr.comb(1,3:end)));
 dPc=repmat(AEstr.comb(1,3:end),length(AEstr.comb(2:end,1)),1);
 pcolor(timc,dPc,plotDc)
+colormap('jet')
+
 title('Combined; dmps+ais')
 shading flat; grid on
 set(gca,'YScale','log')
@@ -861,6 +892,7 @@ if ~iscell(instDat)
     dPc=repmat(dp,length(tim),1);
     
     pcolor(timc,dPc,plotDc)
+    colormap('jet')
     
     shading flat; grid on
     set(gca,'YScale','log')
@@ -887,6 +919,8 @@ else
         dPc=repmat(dp,length(tim),1);
         
         pcolor(timc,dPc,plotDc)
+        colormap('jet')
+        
         hold on
     end
     hold off
@@ -922,6 +956,7 @@ if ~iscell(instDat)
     dPc=repmat(dp,length(tim),1);
     
     pcolor(timc,dPc,plotDc)
+    colormap('jet')
     
     shading flat; grid on
     set(gca,'YScale','log')
@@ -947,6 +982,8 @@ else
         dPc=repmat(dp,length(tim),1);
         
         pcolor(timc,dPc,plotDc)
+        colormap('jet')
+        
         hold on
     end
     hold off
@@ -976,6 +1013,8 @@ for i=1:length(AEstr.aisp_block)
         plotD=log10(max(AEstr.aisp_block{i}(2:end,3:end)',1e-10));
         %             plotD=log10(AEstr.aisp{i}(2:end,3:end)');
         pcolor(tima,dPa,plotD)
+        colormap('jet')
+        
         hold on
     end
 end
@@ -1015,6 +1054,8 @@ for i=1:length(AEstr.aisn_block)
         plotD=log10(max(AEstr.aisn_block{i}(2:end,3:end)',1e-10));
         %             plotD=log10(AEstr.aisp{i}(2:end,3:end)');
         pcolor(tima,dPa,plotD)
+        colormap('jet')
+        
         hold on
     end
 end
@@ -1055,6 +1096,8 @@ for i=1:length(AEstr.naisp_block)
         plotD=log10(max(AEstr.naisp_block{i}(2:end,3:end)',1e-10));
         %             plotD=log10(AEstr.aisp{i}(2:end,3:end)');
         pcolor(tima,dPa,plotD)
+        colormap('jet')
+        
         hold on
     end
 end
@@ -1094,6 +1137,8 @@ for i=1:length(AEstr.naisn_block)
         plotD=log10(max(AEstr.naisn_block{i}(2:end,3:end)',1e-10));
         %             plotD=log10(AEstr.aisp{i}(2:end,3:end)');
         pcolor(tima,dPa,plotD)
+        colormap('jet')
+        
         hold on
     end
 end

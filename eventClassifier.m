@@ -24,7 +24,7 @@ function varargout = eventClassifier(varargin)
 
 % Edit the above text to modify the response to help eventClassifier
 
-% Last Modified by GUIDE v2.5 04-Jun-2007 16:24:25
+% Last Modified by GUIDE v2.5 10-May-2017 18:34:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -124,9 +124,9 @@ global parPath
 clear currentDate
 clear hmD
 
-if exist([fileparts(parPath),'\hmTemp'],'dir')
-    disp(['remove temporary directory: ',[fileparts(parPath),'\hmTemp']])
-    rmdir([fileparts(parPath),'\hmTemp'],'s')
+if exist([fileparts(parPath),filesep,'hmTemp'],'dir')
+    disp(['remove temporary directory: ',[fileparts(parPath),filesep,'hmTemp']])
+    rmdir([fileparts(parPath),filesep,'hmTemp'],'s')
 end
 
 selection = questdlg(['Close ' get(handles.figure1,'Name') '?'],...
@@ -529,8 +529,8 @@ global parPath
 clear currentDate
 clear hmD
 
-disp(['remove temporary directory: ',[fileparts(parPath),'\hmTemp']])
-rmdir([fileparts(parPath),'\hmTemp'],'s')
+disp(['remove temporary directory: ',[fileparts(parPath),filesep,'hmTemp']])
+rmdir([fileparts(parPath),filesep,'hmTemp'],'s')
 
 CloseMenuItem_Callback(hObject, eventdata, handles)
 
@@ -596,7 +596,7 @@ if isfield(hmD,'eventClass')
             val=eval(['hmD.eventClass.',instr,'.evTab(',num2str(strmatch(cols{i},cols)),')']);
             eval(['set(handles.',num2str(cols{i}),',''Value'',val)'])
         end
-
+        
         %         set(handles.ev1a,'Value',eval(['hmD.eventClass.',instr,'.evTab(4)']))
     end
 else
@@ -604,14 +604,14 @@ else
     cols={'date',...
         'ev1a','ev1b','ev2','evApple','evBump','evRain','evFeatureless',...
         'nonEv','undef','badData','partlyBad','checkSum'};
-
+    
     for i=2:length(cols)-2
         val=0;
         eval(['set(handles.',num2str(cols{i}),',''Value'',val)'])
     end
-
+    
     %     set(handles.ev1a,'Value',0)
-
+    
 end
 
 
@@ -638,13 +638,13 @@ global currentDate;
 global hmD;
 global parPath;
 global savePath;
-
-if ispc
-    delim='\';
-else
-    delim='/';
-end
-
+%
+% if ispc
+%     delim='\';
+% else
+%     delim='/';
+% end
+delim=filesep;
 tempFile=[fileparts(parPath),delim,'hmTemp',delim,'hm_',num2str(currentDate),'.mat'];
 savedTempFile=[savePath,delim,'hm_',H_datestr(currentDate,34),'.mat'];
 
@@ -671,14 +671,14 @@ end
 
 if any(hmD.meta.insts_loaded)
     insts=hmD.meta.insts(hmD.meta.insts_loaded);
-
+    
     val=get(handles.popupmenu4_instruments, 'Value');
     if val>length(insts)
         set(handles.popupmenu4_instruments, 'Value',1)
     end
     set(handles.popupmenu4_instruments, 'String', insts);
     set(handles.inst_available,'string',['Instruments available ',num2str(sum(hmD.meta.insts_loaded))])
-
+    
 else
     set(handles.popupmenu4_instruments, 'String', {'missing'});
     set(handles.inst_available,'string',['Instruments available ',num2str(sum(hmD.meta.insts_loaded))])
@@ -694,7 +694,7 @@ global parPath
 global currentDate
 global hmD
 
-tempPath=[fileparts(parPath),'\hmTemp\'];
+tempPath=[fileparts(parPath),filesep,'hmTemp',filesep];
 if ~exist(tempPath,'dir')
     mkdir(tempPath);
 end
@@ -724,19 +724,20 @@ inst=instList{popup_sel_index};
 
 if isfield(hmD,inst)
     set(handles.smoothing,'Value',eval(['hmD.meta.',inst,'.smoothing']));
-
+    
     hm_plot(hmD,inst);
-
+    set(handles.axes1,'xticklabel',[])
+    
     set(gca,'fontSize',12)
     xlim=get(gca,'xlim');
     % set(gca,'xlim',xlim,'ylim',[1e-9 1e-6])
     hold on
     plot(xlim,[25e-9,25e-9],'k')
     hold off
-
+    %     H_xdatetick_int(2);
     title(' ')
     set(handles.sum_inst,'String',[upper(inst),': ',datestr(currentDate,1)])
-
+    
     if isfield(hmD,'fit')
         if isfield(hmD.fit,inst)
             hold on
@@ -748,14 +749,28 @@ if isfield(hmD,inst)
             hold off
         end
     end
-
+    
     set_sumEv(handles)
+    lowLim=0.5e-9;
+    hghLim=25e-9;
+    c=hm_conc(hmD,inst,[lowLim,hghLim]);
+    line(c(:,1),c(:,2),'parent',handles.ax_ts)
+    linkaxes([handles.axes1,handles.ax_ts],'x')
+    
+    xlim=get(handles.axes1,'xlim');
+    int=2;
+    xtick=floor(xlim(1)):int/24:ceil(xlim(2));
+    set(handles.axes1,'xtick',xtick,'xticklabel',[])
+    set(handles.ax_ts,'xtick',xtick)
+    
+    datetick(handles.ax_ts,'x',15,'keepticks','keeplimits');
+    
 else
     plot([0 NaN 1],[0 NaN 1])
     set(gca,'xticklabel',[' '],'yticklabel',[' '])
     text(0.3,0.5,'No data to plot','fontsize',20)
     set(handles.sum_inst,'String',datestr(currentDate,1))
-
+    
 end
 
 %remove previous day or instrument handles
@@ -824,7 +839,7 @@ if isfield(hmD,'fit')
                     grStd=num2str(round(gr(i).gr_avr(2)*1e9*100)/100);
                     mods{i}=['GR: ', grAvr,  '+-' ,grStd,'[nm/h] range: ',num2str(dp(1)),'-',num2str(dp(2)),' nm'];
                 end
-
+                
                 set(handles.sum_modes,'String',mods)
                 if newFitMade
                     set(handles.sum_modes,'Value',length(mods))
@@ -870,7 +885,7 @@ for i=1:length(params)
     if strcmp(params(i).fnm(10:12),'%4d')
         fls=dir(params(i).path);
         for ii=1:length(fls)
-            if fls(ii).isdir & isempty(strfind(fls(ii).name,'.'))
+            if fls(ii).isdir & isempty(strfind(fls(ii).name,'.')) & ~isempty(regexp(fls(ii).name,'[0-9][0-9][0-9][0-9]'))
                 y=str2num(fls(ii).name);
                 if ~isempty(y)
                     h=h+1;
@@ -949,25 +964,25 @@ for i=I1:I2
     else
         [param{i},fval,yhat,h_out,N]=MF_lognorm(dat(i,Iok),dp(Iok),1,4,param{i-1});
     end
-
-%     [param,fval,yhat,H,N]=MF_lognorm(dat(i,:),dp,0,mxNrM);
+    
+    %     [param,fval,yhat,H,N]=MF_lognorm(dat(i,:),dp,0,mxNrM);
     nrM=length(N);
     zs(i,1:nrM)=param{i}(nrM+1:end);
     ws(i,1:nrM)=param{i}(1:nrM);
     Ns(i,1:nrM)=N;
     Hs(i,1:nrM)=h_out;
-
-%     axis([0.5e-9 1000e-9,-inf inf])
-%     set(gca,'xtick',[1e-9,1e-8,1e-7,1e-6],'xgrid','on','xminorgrid','off')
-%     set(gca,'yticklabel',' ')
-
-%     drawnow
+    
+    %     axis([0.5e-9 1000e-9,-inf inf])
+    %     set(gca,'xtick',[1e-9,1e-8,1e-7,1e-6],'xgrid','on','xminorgrid','off')
+    %     set(gca,'yticklabel',' ')
+    
+    %     drawnow
     axes(handles.axes1)
     hold on
     
     for m=1:nrM
-%         log10(Ns(i,m))
-%         markerSize=min(round(log10(Ns(i,m))+2),9)
+        %         log10(Ns(i,m))
+        %         markerSize=min(round(log10(Ns(i,m))+2),9)
         markerSize=round(min(max(((Ns(i,m)-10)/6000)*16,1),10));
         %     plot(handles.axes1,repmat(tim(i),1,length(param{i})/2),param{i}(length(param{i})/2+1:end),...
         %         'k.','markersize',markerSize)
@@ -981,7 +996,7 @@ eval(['hmD.fit.',inst,'.zs{1}=zs;']);
 eval(['hmD.fit.',inst,'.ws{1}=ws;']);
 eval(['hmD.fit.',inst,'.Ns{1}=Ns;']);
 eval(['hmD.fit.',inst,'.Hs{1}=Hs;']);
-
+eval(['hmD.fit.',inst,'.Algorithm=''lognorm''']);
 
 set_info_txt(handles,' ')
 
@@ -1069,7 +1084,7 @@ function loadParam_Callback(hObject, eventdata, handles)
 
 if fileName
     global parPath
-
+    
     parPath=[pathName,fileName];
     parseParams(hObject, eventdata, handles)
 end
@@ -1092,16 +1107,21 @@ function save_Callback(hObject, eventdata, handles)
 %if not temp folder rename the files
 global parPath
 global savePath
+success=0;
+
+popup_sel_index = get(handles.popupmenu4_instruments, 'Value');
+instList=get(handles.popupmenu4_instruments, 'String');
+inst=instList{popup_sel_index};
 
 savePath=uigetdir(fileparts(parPath),'Select the folder to save work to');
 
-if ispc
-    delim='\';
-else
-    delim='/';
-end
+delim=filesep;
+
+fNam_clsf=[savePath,delim,'classificationSummary.txt'];
+fid_clsf=fopen(fNam_clsf,'w'); %make new summary file about current state in the folder
+
 nrFls=0;
-fls=dir([fileparts(parPath),delim,'hmTemp']);
+fls=dir([fileparts(parPath),delim,'hmTemp',delim,'hm_*.mat']);
 for f=1:length(fls)
     if ~fls(f).isdir & strmatch('hm_',fls(f).name)
         try
@@ -1113,10 +1133,22 @@ for f=1:length(fls)
             if ~success(nrFls)
                 disp(['eventClassifier: save_Callback: ' message])
             end
-        catch
+            %save also text file with classified days
+            a=load(dest);
+            eval(['dat=a.hmD.eventClass.',inst,'.evTab;'])
+            if nrFls==1
+                %write with header line
+                eval(['hdr=a.hmD.eventClass.',inst,'.evTabHdr;'])
+                fprintf(fid_clsf,[repmat('%s\t',1,length(hdr)-1),'%s\r\n'],hdr{:});
+            end
+            fprintf(fid_clsf,[repmat('%d\t',1,length(hdr)-1),'%d\r\n'],dat);
+        catch ER
+            disp(ER.message)
+            disp(['Problem saving file: ',dest])
         end
     end
 end
+fclose(fid_clsf);
 
 %if all ok delete temp folder
 if all(success)
@@ -1127,7 +1159,7 @@ if all(success)
         disp(['eventClassifier: parameters file is copied to ',savePath])
         disp(['new param file (',[savePath,delim,nm,ext],') will be used'])
     end
-    rmdir([fileparts(parPath),'\hmTemp'],'s')
+    rmdir([fileparts(parPath),filesep,'hmTemp'],'s')
     parPath=[savePath,delim,nm,ext];
 end
 
@@ -1181,6 +1213,7 @@ set(handles.figure1,'UserData',htemp);
 axes(handles.axes2)
 plot(tm,N,'linewidth',1.5)
 axis([-inf inf -inf inf])
+datetick('x')
 set_sumModes(handles)
 
 
@@ -1276,11 +1309,11 @@ global parPath
 
 if fileName
     global parPath
-
+    
     parPath=[pathName,fileName];
     parseParams(hObject, eventdata, handles)
-
-
+    
+    
     fls=dir(fileparts(parPath));
     nrD=0;
     for d=1:length(fls)
@@ -1290,3 +1323,36 @@ if fileName
     end
     set_info_txt(handles,['Number of days processed in saved folder: ',num2str(nrD)])
 end
+
+
+
+% --- Executes on key press with focus on figure1 and none of its controls.
+function figure1_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+% eventdata.Character
+% eventdata
+if strcmp(eventdata.Key,'rightarrow')
+    next_Callback(hObject, eventdata, handles)
+elseif strcmp(eventdata.Key,'leftarrow')
+    prev_Callback(hObject, eventdata, handles)
+elseif strcmp(eventdata.Key,'n')
+    nonEv_Callback(hObject, eventdata, handles)
+elseif strcmp(eventdata.Key,'u')
+    undef_Callback(hObject, eventdata, handles)
+elseif strcmp(eventdata.Key,'x')
+    badData_Callback(hObject, eventdata, handles)
+elseif strcmp(eventdata.Key,'u')
+    undef_Callback(hObject, eventdata, handles)
+elseif strcmp(eventdata.Key,'a')
+    ev1a_Callback(hObject, eventdata, handles)
+elseif strcmp(eventdata.Key,'b')
+    ev1b_Callback(hObject, eventdata, handles)
+elseif strcmp(eventdata.Key,'2')
+    ev2_Callback(hObject, eventdata, handles)
+end
+

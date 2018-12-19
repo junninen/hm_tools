@@ -7,8 +7,11 @@ function emdata=H_embending(data,step)
 
 [n m]=size(data);
 ste=step-1;
-if m~=1,error('Embending can only be done to single variable');end
-
+if m~=1 && n~=1
+    error('Embending can only be done to single variable');
+end
+data=data(:);
+[n m]=size(data);
 emb_dim=step;
 
 %Find the number of rows to be transformed
